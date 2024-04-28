@@ -14,10 +14,7 @@ class NonAuthLayout extends Component {
   };
 
   componentDidMount() {
-    let currentage = this.capitalizeFirstLetter(this.props.router.location.pathname);
-    currentage = currentage.replaceAll('-', ' ');
-
-    document.title = currentage + ' | Nazox - Responsive Bootstrap 5 Admin Dashboard';
+    document.title = 'Ishop - Seller Admin Dashboard';
   }
   render() {
     return <React.Fragment>{this.props.children}</React.Fragment>;
