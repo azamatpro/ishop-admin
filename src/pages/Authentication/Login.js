@@ -3,11 +3,9 @@ import React, { Component } from 'react';
 import { Row, Col, Input, Button, Alert, Container, Label } from 'reactstrap';
 
 // Redux
-import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { connect, useDispatch } from 'react-redux';
 
-// availity-reactstrap-validation
-import { AvForm, AvField } from 'availity-reactstrap-validation';
+import { Link, useNavigate } from 'react-router-dom';
 
 // actions
 import { checkLogin, apiError } from '../../store/actions';
@@ -16,20 +14,60 @@ import { checkLogin, apiError } from '../../store/actions';
 import logodark from '../../assets/images/logo.png';
 import logolight from '../../assets/images/logo-light.png';
 import withRouter from '../../components/Common/withRouter';
+import { createShopFailure, createShopStart, createShopSuccess } from '../../redux/shop/shopSlice';
+// import { showAlert } from '../../utils/alert';
+
+// Functional component to wrap the class component
+const WrapperComponent = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  // Pass the dispatch function down as a prop to the class component
+  return <Login dispatch={dispatch} navigate={navigate} />;
+};
 
 class Login extends Component {
   constructor(props) {
     super(props);
-    this.state = { username: 'admin@themesdesign.in', password: '123456' };
+    this.state = { email: '', password: '' };
     this.handleSubmit = this.handleSubmit.bind(this);
   }
+  handleChange = (e) => {
+    this.setState((prevState) => ({
+      ...prevState,
+      [e.target.name]: e.target.value,
+    }));
+  };
 
-  handleSubmit(event, values) {
-    this.props.checkLogin(values, this.props.router.navigate);
+  async handleSubmit(e) {
+    e.preventDefault();
+    try {
+      this.props.dispatch(createShopStart());
+      const res = await fetch(`${process.env.REACT_APP_APIKEY}/api/v1/shops/loginShop`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(this.state),
+      });
+      const data = await res.json();
+      if (data.status !== 'success') {
+        this.props.dispatch(createShopFailure(data.message));
+        alert(data.message);
+        return;
+      }
+      this.props.dispatch(createShopSuccess(data));
+      console.log(data);
+      this.props.navigate('/');
+      console.log('nn');
+      alert('You logged in your shop successfully!');
+    } catch (error) {
+      this.props.dispatch(createShopFailure(error.message));
+      alert(error.message);
+    }
   }
 
   componentDidMount() {
-    this.props.apiError('');
     document.body.classList.add('auth-body-bg');
   }
 
@@ -64,30 +102,29 @@ class Login extends Component {
                             <Alert color='danger'>{this.props.loginError}</Alert>
                           ) : null}
                           <div className='p-2 mt-5'>
-                            <AvForm className='form-horizontal' onValidSubmit={this.handleSubmit}>
+                            <form className='form-horizontal' onSubmit={this.handleSubmit}>
                               <div className='auth-form-group-custom mb-4'>
                                 <i className='ri-user-2-line auti-custom-input-icon'></i>
-                                <Label htmlFor='username'>Email</Label>
-                                <AvField
-                                  name='username'
-                                  value={this.state.username}
+                                <Label htmlFor='email'>Email</Label>
+                                <Input
+                                  name='email'
+                                  onChange={this.handleChange}
                                   type='text'
                                   className='form-control'
-                                  id='username'
-                                  validate={{ email: true, required: true }}
-                                  placeholder='Enter username'
+                                  id='email'
+                                  placeholder='Enter email'
                                 />
                               </div>
 
                               <div className='auth-form-group-custom mb-4'>
                                 <i className='ri-lock-2-line auti-custom-input-icon'></i>
-                                <Label htmlFor='userpassword'>Password</Label>
-                                <AvField
+                                <Label htmlFor='password'>Password</Label>
+                                <Input
                                   name='password'
-                                  value={this.state.password}
                                   type='password'
+                                  onChange={this.handleChange}
                                   className='form-control'
-                                  id='userpassword'
+                                  id='password'
                                   placeholder='Enter password'
                                 />
                               </div>
@@ -110,13 +147,13 @@ class Login extends Component {
                                   <i className='mdi mdi-lock me-1'></i> Forgot your password?
                                 </Link>
                               </div>
-                            </AvForm>
+                            </form>
                           </div>
 
                           <div className='mt-5 text-center'>
                             <p>
                               Don't have an account ?{' '}
-                              <Link to='/register' className='fw-medium text-primary'>
+                              <Link to='#' className='fw-medium text-primary'>
                                 {' '}
                                 Register{' '}
                               </Link>{' '}
@@ -149,4 +186,4 @@ const mapStatetoProps = (state) => {
   return { loginError };
 };
 
-export default withRouter(connect(mapStatetoProps, { checkLogin, apiError })(Login));
+export default withRouter(connect(mapStatetoProps, { checkLogin, apiError })(WrapperComponent));

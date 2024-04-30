@@ -162,6 +162,9 @@ class SidebarContent extends Component {
                 <li>
                   <Link to='/lock-screen'>{this.props.t('Lock Screen')}</Link>
                 </li>
+                <li>
+                  <Link to='/logout'>{this.props.t('Log out')}</Link>
+                </li>
               </ul>
             </li>
           </ul>

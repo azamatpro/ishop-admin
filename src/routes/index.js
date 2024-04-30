@@ -6,6 +6,7 @@ import Login from '../pages/Authentication/Login';
 import Logout from '../pages/Authentication/Logout';
 import ForgetPwd from '../pages/Authentication/ForgetPassword';
 import AuthLockScreen from '../pages/Authentication/AuthLockScreen';
+import DeleteAccount from '../pages/Authentication/DeleteAccount';
 
 // Dashboard
 import Dashboard from '../pages/Dashboard/index';
@@ -62,6 +63,7 @@ const publicRoutes = [
   { path: '/login', component: <Login /> },
   { path: '/forgot-password', component: <ForgetPwd /> },
   { path: '/lock-screen', component: <AuthLockScreen /> },
+  { path: '/delete-account', component: <DeleteAccount /> },
 
   // Authentication Inner
   { path: '/auth-login', component: <Login1 /> },
