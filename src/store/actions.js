@@ -6,10 +6,13 @@ export * from './auth/login/actions';
 export * from './auth/forgetpwd/actions';
 
 // Calendar actions
-export * from "./calendar/actions";
+export * from './calendar/actions';
 
 //ecommerce actions
-export * from "./e-commerce/actions";
+export * from './e-commerce/actions';
 
 //chat
-export * from "./chat/actions"
+export * from './chat/actions';
+
+//shop
+export * from './shop/actions';

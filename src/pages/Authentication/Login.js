@@ -3,28 +3,17 @@ import React, { Component } from 'react';
 import { Row, Col, Input, Button, Alert, Container, Label } from 'reactstrap';
 
 // Redux
-import { connect, useDispatch } from 'react-redux';
+import { connect } from 'react-redux';
 
-import { Link, useNavigate } from 'react-router-dom';
-
-// actions
-import { checkLogin, apiError } from '../../store/actions';
+import { Link } from 'react-router-dom';
 
 // import images
 import logodark from '../../assets/images/logo.png';
 import logolight from '../../assets/images/logo-light.png';
 import withRouter from '../../components/Common/withRouter';
-import { createShopFailure, createShopStart, createShopSuccess } from '../../redux/shop/shopSlice';
+
+import { createShopStart, createShopSuccess, createShopFailure } from '../../store/actions';
 // import { showAlert } from '../../utils/alert';
-
-// Functional component to wrap the class component
-const WrapperComponent = () => {
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-
-  // Pass the dispatch function down as a prop to the class component
-  return <Login dispatch={dispatch} navigate={navigate} />;
-};
 
 class Login extends Component {
   constructor(props) {
@@ -32,6 +21,7 @@ class Login extends Component {
     this.state = { email: '', password: '' };
     this.handleSubmit = this.handleSubmit.bind(this);
   }
+
   handleChange = (e) => {
     this.setState((prevState) => ({
       ...prevState,
@@ -57,9 +47,7 @@ class Login extends Component {
         return;
       }
       this.props.dispatch(createShopSuccess(data));
-      console.log(data);
-      this.props.navigate('/');
-      console.log('nn');
+      this.props.router.navigate('/');
       alert('You logged in your shop successfully!');
     } catch (error) {
       this.props.dispatch(createShopFailure(error.message));
@@ -76,6 +64,7 @@ class Login extends Component {
   }
 
   render() {
+    console.log(this.props.currentShop);
     return (
       <React.Fragment>
         <div>
@@ -98,8 +87,8 @@ class Login extends Component {
                             <h4 className='font-size-18 mt-4'>Welcome Back !</h4>
                             <p className='text-muted'>Sign in to continue to Ishop.</p>
                           </div>
-                          {this.props.loginError && this.props.loginError ? (
-                            <Alert color='danger'>{this.props.loginError}</Alert>
+                          {this.props.error && this.props.error ? (
+                            <Alert color='danger'>{this.props.error}</Alert>
                           ) : null}
                           <div className='p-2 mt-5'>
                             <form className='form-horizontal' onSubmit={this.handleSubmit}>
@@ -181,9 +170,12 @@ class Login extends Component {
   }
 }
 
-const mapStatetoProps = (state) => {
-  const { loginError } = state.Login;
-  return { loginError };
+const mapStateToProps = (state) => {
+  const { currentShop, error, loading } = state.Shop;
+  return { currentShop, loading, error };
+};
+const mapDispatchToProps = (dispatch) => {
+  return { dispatch };
 };
 
-export default withRouter(connect(mapStatetoProps, { checkLogin, apiError })(WrapperComponent));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Login));

@@ -8,28 +8,31 @@ import Account from './auth/register/reducer';
 import Login from './auth/login/reducer';
 import Forget from './auth/forgetpwd/reducer';
 
-//Calendar 
-import Calendar from "./calendar/reducer";
+//Calendar
+import Calendar from './calendar/reducer';
 
 //chat
-import chat from "./chat/reducer"
+import chat from './chat/reducer';
 
 //ecommerce
-import Ecommerce from "./e-commerce/reducer";
+import Ecommerce from './e-commerce/reducer';
+
+//shop
+import Shop from './shop/reducer';
 
 const rootReducer = combineReducers({
+  // public
+  Layout,
 
-    // public
-    Layout,
-
-    // Authentication
-    Account,
-    Login,
-    Forget,
-    Calendar,
-    Ecommerce,
-    chat,
-
+  //Shop
+  Shop,
+  // Authentication
+  Account,
+  Login,
+  Forget,
+  Calendar,
+  Ecommerce,
+  chat,
 });
 
 export default rootReducer;
