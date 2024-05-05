@@ -14,7 +14,7 @@ import { checkLogin, apiError } from '../../store/actions';
 import logodark from '../../assets/images/logo.png';
 import logolight from '../../assets/images/logo-light.png';
 import withRouter from '../../components/Common/withRouter';
-import { deleteShopFailure, deleteShopStart, deleteShopSuccess } from '../../redux/shop/shopSlice';
+// import { deleteShopFailure, deleteShopStart, deleteShopSuccess } from '../../redux/shop/shopSlice';
 // import { showAlert } from '../../utils/alert';
 
 // Functional component to wrap the class component
@@ -37,7 +37,7 @@ class DeleteAccount extends Component {
 
   async handleDelete() {
     try {
-      this.props.dispatch(deleteShopStart());
+      // this.props.dispatch(deleteShopStart());
       const shopId = this.props.currentShop.data?.shop._id;
       const { token } = this.props.currentShop;
 
@@ -50,15 +50,15 @@ class DeleteAccount extends Component {
       });
 
       if (!res.ok) {
-        this.props.dispatch(deleteShopFailure('Could not delete shop document'));
+        // this.props.dispatch(deleteShopFailure('Could not delete shop document'));
         // showAlert('error', 'Something went wrong, Could not delete your shop!');
         return;
       }
-      this.props.dispatch(deleteShopSuccess(null));
+      // this.props.dispatch(deleteShopSuccess(null));
       // showAlert('success', 'Shop deleted successfully!');
       this.props.navigate('/login');
     } catch (error) {
-      this.props.dispatch(deleteShopFailure(error.message));
+      // this.props.dispatch(deleteShopFailure(error.message));
       // showAlert('error', error.message);
     }
   }

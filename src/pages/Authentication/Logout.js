@@ -14,7 +14,7 @@ import { checkLogin, apiError } from '../../store/actions';
 import logodark from '../../assets/images/logo.png';
 import logolight from '../../assets/images/logo-light.png';
 import withRouter from '../../components/Common/withRouter';
-import { deleteShopFailure, deleteShopStart, deleteShopSuccess } from '../../redux/shop/shopSlice';
+// import { deleteShopFailure, deleteShopStart, deleteShopSuccess } from '../../redux/shop/shopSlice';
 // import { showAlert } from '../../utils/alert';
 
 // Functional component to wrap the class component
@@ -34,19 +34,19 @@ class Logout extends Component {
 
   async handleLogout() {
     try {
-      this.props.dispatch(deleteShopStart());
+      // this.props.dispatch(deleteShopStart());
       const res = await fetch(`${process.env.REACT_APP_APIKEY}/api/v1/shops/logoutShop`);
       const data = await res.json();
       if (data.status !== 'success') {
-        this.props.dispatch(deleteShopFailure(data.message));
+        // this.props.dispatch(deleteShopFailure(data.message));
         // showAlert('error', 'Something went wrong, Could not log out!');
         return;
       }
-      this.props.dispatch(deleteShopSuccess(data));
+      // this.props.dispatch(deleteShopSuccess(data));
       //   showAlert('success', 'You logged out from shop successfully!');
       this.props.navigate('/login');
     } catch (error) {
-      this.props.dispatch(deleteShopFailure(error.message));
+      // this.props.dispatch(deleteShopFailure(error.message));
       //   showAlert('error', error.message);
     }
   }
