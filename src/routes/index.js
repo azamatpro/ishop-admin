@@ -5,6 +5,7 @@ import { Navigate } from 'react-router-dom';
 import Login from '../pages/Authentication/Login';
 import Logout from '../pages/Authentication/Logout';
 import ForgetPwd from '../pages/Authentication/ForgetPassword';
+import ResetPassword from '../pages/Authentication/ResetPassword';
 import AuthLockScreen from '../pages/Authentication/AuthLockScreen';
 import DeleteAccount from '../pages/Authentication/DeleteAccount';
 
@@ -32,6 +33,7 @@ import EmailRead from '../pages/Email/email-read';
 // Inner Authentication
 import Login1 from '../pages/AuthenticationInner/Login';
 import ForgetPwd1 from '../pages/AuthenticationInner/ForgetPassword';
+import UpdatePassword from '../pages/Authentication/UpdatePassword';
 
 const authProtectedRoutes = [
   //Email
@@ -62,6 +64,8 @@ const publicRoutes = [
   { path: '/logout', component: <Logout /> },
   { path: '/login', component: <Login /> },
   { path: '/forgot-password', component: <ForgetPwd /> },
+  { path: '/update-password', component: <UpdatePassword /> },
+  { path: '/reset-password/:token', component: <ResetPassword /> },
   { path: '/lock-screen', component: <AuthLockScreen /> },
   { path: '/delete-account', component: <DeleteAccount /> },
 

@@ -23,6 +23,12 @@ class SidebarContent extends Component {
     super(props);
     this.state = {
       pathName: this.props.router.location.pathname,
+      loggedAuthElements: [
+        { to: '/update-password', text: 'Update Password' },
+        { to: '/forgot-password', text: 'Forget Password' },
+        { to: '/lock-screen', text: 'Lock Screen' },
+        { to: '/logout', text: 'Log out' },
+      ],
     };
   }
 
@@ -153,18 +159,17 @@ class SidebarContent extends Component {
                 <span className='ms-1'>{this.props.t('Authentication')}</span>
               </Link>
               <ul className='sub-menu'>
-                <li>
-                  <Link to='/login'>{this.props.t('Login')}</Link>
-                </li>
-                <li>
-                  <Link to='/forgot-password'>{this.props.t('Recover Password')}</Link>
-                </li>
-                <li>
-                  <Link to='/lock-screen'>{this.props.t('Lock Screen')}</Link>
-                </li>
-                <li>
-                  <Link to='/logout'>{this.props.t('Log out')}</Link>
-                </li>
+                {!this.props.currentShop && (
+                  <li>
+                    <Link to='/login'>{this.props.t('Login')}</Link>
+                  </li>
+                )}
+                {this.props.currentShop &&
+                  this.state.loggedAuthElements.map((el, index) => (
+                    <li key={index}>
+                      <Link to={el.to}>{this.props.t(el.text)}</Link>
+                    </li>
+                  ))}
               </ul>
             </li>
           </ul>
@@ -175,7 +180,8 @@ class SidebarContent extends Component {
 }
 
 const mapStatetoProps = (state) => {
-  return { ...state.Layout };
+  const { currentShop } = state.Shop;
+  return { currentShop, ...state.Layout };
 };
 
 export default withRouter(

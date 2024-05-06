@@ -1,19 +1,17 @@
 import React, { Component } from 'react';
-import { Row, Col, Alert, Button, Container, Label } from 'reactstrap';
+import { Row, Col, Alert, Button, Container, Label, Input } from 'reactstrap';
 
 // Redux
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 
 // availity-reactstrap-validation
-import { AvForm, AvField } from 'availity-reactstrap-validation';
-
-// action
-import { forgetUser } from '../../store/actions';
+import { AvForm } from 'availity-reactstrap-validation';
 
 // import images
 import logodark from '../../assets/images/logo.png';
 import withRouter from '../../components/Common/withRouter';
+import { showAlert } from '../../utils/alert';
 
 class ForgetPasswordPage extends Component {
   constructor(props) {
@@ -24,9 +22,34 @@ class ForgetPasswordPage extends Component {
     this.handleValidSubmit = this.handleValidSubmit.bind(this);
   }
 
+  handleChange = (e) => {
+    this.setState((prevState) => ({
+      ...prevState,
+      [e.target.name]: e.target.value,
+    }));
+  };
+
   // handleValidSubmit
-  handleValidSubmit(event, values) {
-    this.props.forgetUser(values, this.props.history);
+  async handleValidSubmit() {
+    try {
+      const { navigate } = this.props.router;
+      const res = await fetch(`${process.env.REACT_APP_APIKEY}/api/v1/shops/forgetPassword/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(this.state),
+      });
+      const data = await res.json();
+      if (data.status !== 'success') {
+        showAlert('error', 'Something went wrong, Could not get token with this email!');
+        return;
+      }
+      showAlert('success', 'Password reset url sent to your email!');
+      navigate('/');
+    } catch (error) {
+      showAlert('error', error.message);
+    }
   }
 
   render() {
@@ -53,27 +76,22 @@ class ForgetPasswordPage extends Component {
                           </div>
 
                           <div className='p-2 mt-5'>
-                            {this.props.forgetError && this.props.forgetError ? (
+                            {this.props.error && this.props.error ? (
                               <Alert color='danger' className='mb-4'>
-                                {this.props.forgetError}
+                                {this.props.error}
                               </Alert>
                             ) : null}
-                            {this.props.message ? (
-                              <Alert color='success' className='mb-4'>
-                                {this.props.message}
-                              </Alert>
-                            ) : null}
+
                             <AvForm className='form-horizontal' onValidSubmit={this.handleValidSubmit}>
                               <div className='auth-form-group-custom mb-4'>
                                 <i className='ri-mail-line auti-custom-input-icon'></i>
                                 <Label htmlFor='useremail'>Email</Label>
-                                <AvField
-                                  name='useremail'
-                                  value={this.state.username}
+                                <Input
+                                  name='email'
+                                  onChange={this.handleChange}
                                   type='email'
-                                  validate={{ email: true, required: true }}
                                   className='form-control'
-                                  id='useremail'
+                                  id='email'
                                   placeholder='Enter email'
                                 />
                               </div>
@@ -118,8 +136,12 @@ class ForgetPasswordPage extends Component {
 }
 
 const mapStatetoProps = (state) => {
-  const { message, forgetError, loading } = state.Forget;
-  return { message, forgetError, loading };
+  const { error, currentShop, loading } = state.Shop;
+  return { error, currentShop, loading };
 };
 
-export default withRouter(connect(mapStatetoProps, { forgetUser })(ForgetPasswordPage));
+const mapDispatchToProps = (dispatch) => {
+  return { dispatch };
+};
+
+export default withRouter(connect(mapStatetoProps, mapDispatchToProps)(ForgetPasswordPage));

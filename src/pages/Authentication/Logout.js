@@ -3,28 +3,16 @@ import React, { Component } from 'react';
 import { Row, Col, Button, Alert, Container } from 'reactstrap';
 
 // Redux
-import { connect, useDispatch } from 'react-redux';
+import { connect } from 'react-redux';
 
-import { Link, useNavigate } from 'react-router-dom';
-
-// actions
-import { checkLogin, apiError } from '../../store/actions';
+import { Link } from 'react-router-dom';
 
 // import images
 import logodark from '../../assets/images/logo.png';
 import logolight from '../../assets/images/logo-light.png';
 import withRouter from '../../components/Common/withRouter';
-// import { deleteShopFailure, deleteShopStart, deleteShopSuccess } from '../../redux/shop/shopSlice';
-// import { showAlert } from '../../utils/alert';
-
-// Functional component to wrap the class component
-const WrapperComponent = () => {
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-
-  // Pass the dispatch function down as a prop to the class component
-  return <Logout dispatch={dispatch} navigate={navigate} />;
-};
+import { deleteShopFailure, deleteShopStart, deleteShopSuccess } from '../../store/actions';
+import { showAlert } from '../../utils/alert';
 
 class Logout extends Component {
   constructor(props) {
@@ -34,20 +22,21 @@ class Logout extends Component {
 
   async handleLogout() {
     try {
-      // this.props.dispatch(deleteShopStart());
+      const { navigate } = this.props.router;
+      this.props.dispatch(deleteShopStart());
       const res = await fetch(`${process.env.REACT_APP_APIKEY}/api/v1/shops/logoutShop`);
       const data = await res.json();
       if (data.status !== 'success') {
-        // this.props.dispatch(deleteShopFailure(data.message));
-        // showAlert('error', 'Something went wrong, Could not log out!');
+        this.props.dispatch(deleteShopFailure(data.message));
+        showAlert('danger', data.message);
         return;
       }
-      // this.props.dispatch(deleteShopSuccess(data));
-      //   showAlert('success', 'You logged out from shop successfully!');
-      this.props.navigate('/login');
+      this.props.dispatch(deleteShopSuccess(data));
+      showAlert('success', 'You logged out from shop successfully!');
+      navigate('/login');
     } catch (error) {
-      // this.props.dispatch(deleteShopFailure(error.message));
-      //   showAlert('error', error.message);
+      this.props.dispatch(deleteShopFailure(error.message));
+      showAlert('danger', error.message);
     }
   }
 
@@ -90,8 +79,8 @@ class Logout extends Component {
                               out? If so, click the button below.
                             </p>
                           </div>
-                          {this.props.loginError && this.props.loginError ? (
-                            <Alert color='danger'>{this.props.loginError}</Alert>
+                          {this.props.error && this.props.error ? (
+                            <Alert color='danger'>{this.props.error}</Alert>
                           ) : null}
 
                           <div className='mt-4 text-center'>
@@ -130,8 +119,12 @@ class Logout extends Component {
 }
 
 const mapStatetoProps = (state) => {
-  const { loginError } = state.Login;
-  return { loginError };
+  const { error } = state.Shop;
+  return { error };
 };
 
-export default withRouter(connect(mapStatetoProps, { checkLogin, apiError })(WrapperComponent));
+const mapDispatchToProps = (dispatch) => {
+  return { dispatch };
+};
+
+export default withRouter(connect(mapStatetoProps, mapDispatchToProps)(Logout));

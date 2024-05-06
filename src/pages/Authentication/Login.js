@@ -13,7 +13,7 @@ import logolight from '../../assets/images/logo-light.png';
 import withRouter from '../../components/Common/withRouter';
 
 import { createShopStart, createShopSuccess, createShopFailure } from '../../store/actions';
-// import { showAlert } from '../../utils/alert';
+import { showAlert } from '../../utils/alert';
 
 class Login extends Component {
   constructor(props) {
@@ -32,6 +32,7 @@ class Login extends Component {
   async handleSubmit(e) {
     e.preventDefault();
     try {
+      const { navigate } = this.props.router;
       this.props.dispatch(createShopStart());
       const res = await fetch(`${process.env.REACT_APP_APIKEY}/api/v1/shops/loginShop`, {
         method: 'POST',
@@ -43,15 +44,15 @@ class Login extends Component {
       const data = await res.json();
       if (data.status !== 'success') {
         this.props.dispatch(createShopFailure(data.message));
-        alert(data.message);
+        showAlert('danger', data.message);
         return;
       }
       this.props.dispatch(createShopSuccess(data));
-      this.props.router.navigate('/');
-      alert('You logged in your shop successfully!');
+      navigate('/');
+      showAlert('success', 'You logged in your shop successfully!');
     } catch (error) {
       this.props.dispatch(createShopFailure(error.message));
-      alert(error.message);
+      showAlert('danger', error.message);
     }
   }
 
@@ -64,7 +65,6 @@ class Login extends Component {
   }
 
   render() {
-    console.log(this.props.currentShop);
     return (
       <React.Fragment>
         <div>

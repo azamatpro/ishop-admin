@@ -7,11 +7,21 @@ export const hideAlert = () => {
 
 // type is 'success' or 'error'
 export const showAlert = (type, msg) => {
-  const alert = `fixed top-0 left-1/2 transform -translate-x-1/2 z-50 text-white text-lg font-normal text-center rounded-b-lg p-5 shadow-lg bg-gray-900
+  const alertStyles = `
+  position: fixed;
+  top: 0;
+  left: 50%;
+  width: 400px;
+  transform: translateX(-50%);
+  z-index: 1003;
+  font-size: 1.2rem;
+  padding: 1rem;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+  text-align: center;
 `;
-  const bgColor = `${type === 'success' ? 'bg-green-500' : 'bg-red-600'}`;
-  const markup = `<div class="murkup ${alert} ${bgColor}">${msg}</div>`;
-  const body = document.getElementById('');
+  const markup = `<div style="${alertStyles}" class="murkup alert  alert-${type}">${msg}</div>`;
+
+  const body = document.body;
   body.insertAdjacentHTML('afterbegin', markup);
   window.setTimeout(hideAlert, 5000);
 };
