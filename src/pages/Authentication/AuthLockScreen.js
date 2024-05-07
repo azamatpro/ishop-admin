@@ -1,21 +1,63 @@
 import React, { Component } from 'react';
-import { Container, Row, Col, Label } from 'reactstrap';
+import { Container, Row, Col, Label, Input, Button } from 'reactstrap';
 import { Link } from 'react-router-dom';
 
 // availity-reactstrap-validation
-import { AvForm, AvField } from 'availity-reactstrap-validation';
+import { AvForm } from 'availity-reactstrap-validation';
 
 //Import Images
 import logodark from '../../assets/images/logo.png';
 import avatar2 from '../../assets/images/users/avatar-2.jpg';
+import withRouter from '../../components/Common/withRouter';
+import { connect } from 'react-redux';
+import { showAlert } from '../../utils/alert';
 
 class AuthLockScreen extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {};
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  handleChange = (e) => {
+    this.setState((prevState) => ({
+      ...prevState,
+      [e.target.name]: e.target.value,
+    }));
+  };
+
   componentDidMount() {
     document.body.classList.add('auth-body-bg');
   }
 
   componentWillUnmount() {
     document.body.classList.remove('auth-body-bg');
+  }
+
+  async handleSubmit() {
+    try {
+      const { token } = this.props.currentShop;
+      const { email } = this.props.currentShop.data?.shop;
+      const { navigate } = this.props.router;
+      const res = await fetch(`${process.env.REACT_APP_APIKEY}/api/v1/shops/unlockAccount`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ ...this.state, email }),
+      });
+
+      const data = await res.json();
+      if (data.status !== 'success') {
+        showAlert('danger', 'Something went wrong, We could not unlock your account!');
+        return;
+      }
+      showAlert('success', 'Shop unlocked successfully!');
+      navigate('/');
+    } catch (error) {
+      showAlert('danger', error.message);
+    }
   }
 
   render() {
@@ -42,7 +84,7 @@ class AuthLockScreen extends Component {
                           </div>
 
                           <div className='p-2 mt-5'>
-                            <AvForm className='form-horizontal'>
+                            <AvForm className='form-horizontal' onSubmit={this.handleSubmit}>
                               <div className='user-thumb text-center mb-5'>
                                 <img src={avatar2} className='rounded-circle img-thumbnail avatar-md' alt='thumbnail' />
                                 <h5 className='font-size-15 mt-3'>Jacob Lopez</h5>
@@ -50,23 +92,24 @@ class AuthLockScreen extends Component {
 
                               <div className='mb-3 auth-form-group-custom mb-4'>
                                 <i className='ri-lock-2-line auti-custom-input-icon'></i>
-                                <Label className='form-label' for='userpassword'>
+                                <Label className='form-label' for='password'>
                                   Password
                                 </Label>
-                                <AvField
+                                <Input
                                   name='password'
+                                  onChange={this.handleChange}
                                   validate={{ required: true }}
                                   type='password'
                                   className='form-control'
-                                  id='userpassword'
+                                  id='password'
                                   placeholder='Enter password'
                                 />
                               </div>
 
                               <div className='mt-4 text-center'>
-                                <Link to='/' className='btn btn-primary w-md waves-effect waves-light'>
+                                <Button color='primary' className='w-md waves-effect waves-light' type='submit'>
                                   Unlock
-                                </Link>
+                                </Button>
                               </div>
                             </AvForm>
                           </div>
@@ -102,4 +145,9 @@ class AuthLockScreen extends Component {
   }
 }
 
-export default AuthLockScreen;
+const mapStateToProps = (state) => {
+  const { currentShop } = state.Shop;
+  return { currentShop };
+};
+
+export default withRouter(connect(mapStateToProps)(AuthLockScreen));

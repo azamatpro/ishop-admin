@@ -47,7 +47,7 @@ class UpdatePasswordPage extends Component {
       const data = await res.json();
       if (data.status !== 'success') {
         this.props.dispatch(updateShopFailure(data.message));
-        showAlert('error', 'Something went wrong, Could not update your password!');
+        showAlert('danger', 'Something went wrong, Could not update your password!');
         return;
       }
       this.props.dispatch(updateShopSuccess(data));
@@ -55,7 +55,7 @@ class UpdatePasswordPage extends Component {
       navigate('/');
     } catch (error) {
       this.props.dispatch(updateShopFailure(error.message));
-      showAlert('error', error.message);
+      showAlert('danger', error.message);
     }
   }
 

@@ -42,13 +42,13 @@ class ForgetPasswordPage extends Component {
       });
       const data = await res.json();
       if (data.status !== 'success') {
-        showAlert('error', 'Something went wrong, Could not get token with this email!');
+        showAlert('danger', 'Something went wrong, Could not get token with this email!');
         return;
       }
       showAlert('success', 'Password reset url sent to your email!');
       navigate('/');
     } catch (error) {
-      showAlert('error', error.message);
+      showAlert('danger', error.message);
     }
   }
 

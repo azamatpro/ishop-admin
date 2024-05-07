@@ -17,7 +17,6 @@ class ResetPasswordPage extends Component {
   constructor(props) {
     super(props);
     this.state = {};
-
     // handleValidSubmit
     this.handleValidSubmit = this.handleValidSubmit.bind(this);
   }
@@ -43,13 +42,13 @@ class ResetPasswordPage extends Component {
       });
       const data = await res.json();
       if (data.status !== 'success') {
-        showAlert('error', 'Something went wrong, We could not reset your password!');
+        showAlert('danger', 'Something went wrong, We could not reset your password!');
         return;
       }
       showAlert('success', 'Password recovered successfully, Log in with your new password!');
       navigate('/login');
     } catch (error) {
-      showAlert('error', error.message);
+      showAlert('danger', error.message);
     }
   }
 
