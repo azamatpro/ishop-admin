@@ -47,8 +47,8 @@ class Login extends Component {
         showAlert('danger', data.message);
         return;
       }
-      this.props.dispatch(createShopSuccess(data));
       navigate('/');
+      this.props.dispatch(createShopSuccess(data));
       showAlert('success', 'You logged in your shop successfully!');
     } catch (error) {
       this.props.dispatch(createShopFailure(error.message));
