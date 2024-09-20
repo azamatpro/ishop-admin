@@ -48,6 +48,7 @@ class Login extends Component {
         return;
       }
       navigate('/');
+      localStorage.setItem("authToken", "Fake_Token");
       this.props.dispatch(createShopSuccess(data));
       showAlert('success', 'You logged in your shop successfully!');
     } catch (error) {
